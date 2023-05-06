@@ -1,5 +1,4 @@
 django
-psycopg2
 python-environ
 django-cors-headers
 django-jazzmin
