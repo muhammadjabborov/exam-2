@@ -16,6 +16,7 @@ JAZZMIN_SETTINGS = {
     # CSS classes that are applied to the logo above
     "site_logo_classes": "img-square",
     # Relative path to a favicon for your site, will default to site_logo if absent (ideally 32x32 px)
+    # Relative path to a favicon for your site, will default to site_logo if absent (ideally 32x32 px)
     # "site_icon": "logos/admin_logo.png",
     # Welcome text on the login screen
     "welcome_sign": "Exam Welcome",
@@ -116,7 +117,7 @@ JAZZMIN_SETTINGS = {
         "auth.user": "collapsible",
     },
     # Add a language dropdown into the admin
-    "language_chooser": True,
+    "language_chooser": False,
 }  # type: Dict[str, Any]
 
 JAZZMIN_UI_TWEAKS = {

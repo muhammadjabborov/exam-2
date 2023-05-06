@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -43,18 +44,26 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
 ]
 
 CUSTOM_APPS = [
     "apps.common",
-    "apps.task1"
+    "apps.task1",
+    "apps.task2",
+    "apps.task3",
+    "apps.task4",
+    "apps.task5"
 ]
 
 THIRD_PARTY_APPS = [
     "rest_framework",
     "drf_yasg",
     "corsheaders",
-    "phonenumber_field"
+    "phonenumber_field",
+    "rest_framework_simplejwt",
+    "pycryptodome_test_vectors",
+    'cryptography'
 
 ]
 
@@ -181,3 +190,31 @@ CELERY_TIMEZONE = "Asia/Tashkent"
 
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    'AUTH_TOKEN_GET_USER_SECRET_KEY': SECRET_KEY,
+    'AUTH_TOKEN_GET_USER_BY_TOKEN': 'rest_framework_simplejwt.authentication.JWTAuthentication.get_user',
+
+    'TOKEN_OBTAIN_PAIR_SERIALIZER': 'path.to.CustomTokenObtainPairSerializer',
+}

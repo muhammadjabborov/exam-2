@@ -1,31 +1,34 @@
-from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
+                                        PermissionsMixin)
 from django.db import models
-from phonenumber_field import modelfields
+from django.utils.translation import gettext_lazy as _
+from phonenumber_field.modelfields import PhoneNumberField
+from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.task1.user_manager import UserManager
+from apps.common.models import BaseModel
+from apps.task1.user_manager import CustomUserManager
 
 
-class User(AbstractBaseUser):
-    phone_number = modelfields.PhoneNumberField(region="UZ")
-    username = models.CharField(max_length=50, unique=True, null=True)
-    email = models.EmailField(max_length=50)
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+class User(AbstractBaseUser, PermissionsMixin, BaseModel):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    phone_number = PhoneNumberField(max_length=32, unique=True)
+    email = models.EmailField(unique=True, blank=True, null=True)
 
-    date_joined = models.DateTimeField(verbose_name=_("date joined"), auto_now_add=True)
-    is_admin = models.BooleanField(default=False)
+    birthday = models.DateField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-    is_deleted = models.BooleanField(default=False)
-    deleted_at = models.DateTimeField(null=True, blank=True)
 
-    USERNAME_FIELD = "username"
+    USERNAME_FIELD = "phone_number"
     REQUIRED_FIELDS = ["first_name", "last_name"]
 
-    objects = UserManager()
+    objects = CustomUserManager()
 
-    class Meta:
-        verbose_name = "User"
-        verbose_name_plural = "Users"
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+    def tokens(self):
+        refresh = RefreshToken.for_user(self)
+
+        return {"refresh": str(refresh), "access": str(refresh.access_token)}
